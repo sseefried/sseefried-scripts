@@ -1,0 +1,26 @@
+#!/bin/bash
+# gr = "Grep recursively". Searches for text inside ASCII files.
+
+GREP=/opt/local/bin/grep
+
+
+while [ $# -gt 0 ]; do
+  case "$1" in
+     -*)
+          GREP_ARGS="$GREP_ARGS $1"
+          shift
+          ;;
+      *)
+          if [ "$PATTERN" = "" ]; then
+            PATTERN=$1
+          else
+             FILE_PATTERNS="--include=$1 $FILE_PATTERNS"
+          fi
+          shift
+          ;;
+  esac
+done
+
+if [ "$PATTERN" != "" ]; then
+ $GREP -Irn --color "$PATTERN" $FILE_PATTERNS $GREP_ARGS * --exclude-dir='.svn' --exclude-dir='darcs' --exclude="*~" --exclude="*#*#*" 2>/dev/null
+fi
